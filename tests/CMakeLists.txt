@@ -9,17 +9,21 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+set(ADDITIONAL_LINKER_OPTS "stdc++fs")
+endif()
+
 enable_testing()
 
 add_executable(
-  hello_test
+  ${CMAKE_PROJECT_NAME}_test
   ${test_SRCS}
 )
 target_link_libraries(
-  hello_test
+  ${CMAKE_PROJECT_NAME}_test
   gtest_main
   ${CMAKE_PROJECT_NAME}
+  ${ADDITIONAL_LINKER_OPTS}
 )
-
 include(GoogleTest)
-gtest_discover_tests(hello_test)
+gtest_discover_tests(${CMAKE_PROJECT_NAME}_test)
