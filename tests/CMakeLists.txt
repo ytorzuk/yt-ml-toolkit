@@ -21,9 +21,11 @@ add_executable(
 )
 target_link_libraries(
   ${CMAKE_PROJECT_NAME}_test
+  PRIVATE
   gtest_main
   ${CMAKE_PROJECT_NAME}
   ${ADDITIONAL_LINKER_OPTS}
+  GSL
 )
 include(GoogleTest)
 gtest_discover_tests(${CMAKE_PROJECT_NAME}_test)
