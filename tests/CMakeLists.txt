@@ -23,6 +23,7 @@ target_link_libraries(
   ${CMAKE_PROJECT_NAME}_test
   PRIVATE
   gtest_main
+  gmock
   ${CMAKE_PROJECT_NAME}
   ${ADDITIONAL_LINKER_OPTS}
   GSL
