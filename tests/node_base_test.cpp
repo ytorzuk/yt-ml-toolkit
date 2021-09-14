@@ -110,7 +110,7 @@ TEST(NodeBaseTest, CheckBFSTraversal)
 {
     auto graphNodes = buildFakeGraph();
     std::list<Node*> orderedNodes;
-    BFSTraversal(*graphNodes.front(), [&orderedNodes](Node& node) { orderedNodes.push_back(&node); });
+    BFSTraversal(*graphNodes.front(), [&orderedNodes](Node& node) { orderedNodes.push_back(&node); return true; });
     std::string result;
     for (auto &node : orderedNodes)
         result += '/' + node->name();
@@ -126,15 +126,61 @@ TEST(NodeBaseTest, CheckBFSTraversal)
 }
 
 
+TEST(NodeBaseTest, CheckBFSTraversalStop)
+{
+    auto graphNodes = buildFakeGraph();
+    std::list<Node*> orderedNodes;
+    BFSTraversal(*graphNodes.front(), [&orderedNodes](Node& node) {
+        orderedNodes.push_back(&node);
+        return node.name() != "mul_0";
+    });
+    std::string result;
+    for (auto &node : orderedNodes)
+        result += '/' + node->name();
+    EXPECT_EQ(result, "/input_0/add_0/mul_0");
+    using namespace fake_nodes;
+    EXPECT_CALL(*std::dynamic_pointer_cast<Input>(graphNodes[0]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[1]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[2]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[3]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Multiply>(graphNodes[4]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[5]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[6]), Die());
+}
+
+
 TEST(NodeBaseTest, CheckBackBFSTraversal)
 {
     auto graphNodes = buildFakeGraph();
     std::list<Node*> orderedNodes;
-    backBFSTraversal(*graphNodes.back(), [&orderedNodes](Node& node) { orderedNodes.push_back(&node); });
+    backBFSTraversal(*graphNodes.back(), [&orderedNodes](Node& node) { orderedNodes.push_back(&node); return true; });
     std::string result;
     for (auto &node : orderedNodes)
         result += '/' + node->name();
     EXPECT_EQ(result, "/result_0/add_1/mul_0/add_0/add_0/const_1/input_0/const_0/input_0/const_0");
+    using namespace fake_nodes;
+    EXPECT_CALL(*std::dynamic_pointer_cast<Input>(graphNodes[0]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[1]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[2]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[3]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Multiply>(graphNodes[4]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[5]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[6]), Die());
+}
+
+
+TEST(NodeBaseTest, CheckBackBFSTraversalStop)
+{
+    auto graphNodes = buildFakeGraph();
+    std::list<Node*> orderedNodes;
+    backBFSTraversal(*graphNodes.back(), [&orderedNodes](Node& node) {
+        orderedNodes.push_back(&node);
+        return node.name() != "add_0";
+    });
+    std::string result;
+    for (auto &node : orderedNodes)
+        result += '/' + node->name();
+    EXPECT_EQ(result, "/result_0/add_1/mul_0/add_0");
     using namespace fake_nodes;
     EXPECT_CALL(*std::dynamic_pointer_cast<Input>(graphNodes[0]), Die());
     EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[1]), Die());
