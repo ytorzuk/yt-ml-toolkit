@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-namespace yt_ml_toolkit {
+namespace yt {
 namespace graph {
 
 class Node;

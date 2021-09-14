@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-namespace yt_ml_toolkit {
+namespace yt {
 namespace dataset {
 
 class Mnist
@@ -28,4 +28,4 @@ private:
 };
 
 } // dataset
-} // yt_ml_toolkit
+} // yt
