@@ -1,8 +1,8 @@
 #include "node_base.h"
 #include <list>
 
-namespace yt_ml_toolkit {
-namespace graph_representation {
+namespace yt {
+namespace graph {
 
 Node::Node(const std::vector<TensorDescriptor::WeakPtr> &inputs, const std::string &name) :
     name_ {name},
@@ -35,7 +35,7 @@ Node::~Node()
     }
 }
 
-const std::__cxx11::string &Node::name() const
+const std::string &Node::name() const
 {
     return name_;
 }
@@ -60,7 +60,7 @@ const Node::InputsList &Node::inputs() const
     return inputs_;
 }
 
-yt_ml_toolkit::graph_representation::Node::operator TensorDescriptor::WeakPtr()
+Node::operator TensorDescriptor::WeakPtr()
 {
     return outputs_.front();
 }

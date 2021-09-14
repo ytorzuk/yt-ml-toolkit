@@ -3,7 +3,7 @@
 #include <array>
 #include <memory>
 
-namespace yt_ml_toolkit {
+namespace yt {
 
 enum DataType
 {

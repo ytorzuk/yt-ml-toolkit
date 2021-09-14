@@ -1,4 +1,4 @@
-#include <mnist.h>
+#include <dataset/mnist.h>
 #include <algorithm>
 #ifdef __GNUC__
 #include <experimental/filesystem>
@@ -82,7 +82,7 @@ protected:
 
 
 TEST_F(MnistTest, LoadImagesBasicTest) {
-    yt_ml_toolkit::Mnist mnist {mnistImages_, mnistLabels_};
+    yt::dataset::Mnist mnist {mnistImages_, mnistLabels_};
     auto imageBytes = mnist.loadImages(2);
     std::uint8_t dataChunk {};
     for (int i = 0; i < mnist.imageWidth() * mnist.imageHeight() * mnist.size(); i++)
@@ -91,7 +91,7 @@ TEST_F(MnistTest, LoadImagesBasicTest) {
 
 
 TEST_F(MnistTest, LoadLabelsBasicTest) {
-    yt_ml_toolkit::Mnist mnist {mnistImages_, mnistLabels_};
+    yt::dataset::Mnist mnist {mnistImages_, mnistLabels_};
     auto labels = mnist.loadLabels(2);
     unsigned char dataChunk {};
     for (int i = 0; i < mnist.size(); i++)
@@ -99,11 +99,11 @@ TEST_F(MnistTest, LoadLabelsBasicTest) {
 }
 
 TEST_F(MnistTest, LoadMoreImagesThanAvailableTest) {
-    yt_ml_toolkit::Mnist mnist {mnistImages_, mnistLabels_};
+    yt::dataset::Mnist mnist {mnistImages_, mnistLabels_};
     EXPECT_THROW(mnist.loadImages(10), std::out_of_range);
 }
 
 TEST_F(MnistTest, LoadMoreLabelsThanAvailableTest) {
-    yt_ml_toolkit::Mnist mnist {mnistImages_, mnistLabels_};
+    yt::dataset::Mnist mnist {mnistImages_, mnistLabels_};
     EXPECT_THROW(mnist.loadLabels(10), std::out_of_range);
 }

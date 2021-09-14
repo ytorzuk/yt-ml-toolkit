@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-namespace yt_ml_toolkit {
-namespace graph_representation {
+namespace yt {
+namespace graph {
 
 class Node;
 
@@ -63,5 +63,5 @@ protected:
 void BFSTraversal(Node& node, std::function<void(Node&)> callback);
 void backBFSTraversal(Node& node, std::function<void(Node&)> callback);
 
-} // graph_representation
+} // graph
 } // yt_ml_toolkit

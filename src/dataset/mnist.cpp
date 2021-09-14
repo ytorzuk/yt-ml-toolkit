@@ -1,8 +1,8 @@
 #include "mnist.h"
 #include <stdexcept>
 
-namespace yt_ml_toolkit
-{
+namespace yt {
+namespace dataset {
 
 Mnist::Mnist(std::istream &images, std::istream &labels) :
     images_ {images},
@@ -63,4 +63,5 @@ int Mnist::size() const
     return numItems_;
 }
 
-} // yt_ml_toolkit
+} // dataset
+} // yt

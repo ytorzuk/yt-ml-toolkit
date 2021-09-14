@@ -1,4 +1,4 @@
-#include <node_base.h>
+#include <graph/node_base.h>
 #include <array>
 #include <list>
 #include <memory>
@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-using namespace yt_ml_toolkit::graph_representation;
+using namespace yt::graph;
 using namespace std::string_literals;
 
 namespace fake_nodes {
@@ -19,7 +19,7 @@ class Input : public Node
 public:
     Input(const std::string &name) : Node{std::move(std::vector<TensorDescriptor::WeakPtr>{}), name}
     {
-        outputs_ = {std::make_shared<TensorDescriptor>(yt_ml_toolkit::DataType::fp32, yt_ml_toolkit::Shape{12}, this)};
+        outputs_ = {std::make_shared<TensorDescriptor>(yt::DataType::fp32, yt::Shape{12}, this)};
     }
     const OutputsList &inferOutputShapes() override { return outputs_; }
     MOCK_METHOD(void, Die, ());
@@ -31,7 +31,7 @@ class Const : public Node
 public:
     Const(const std::string &name) : Node{std::move(std::vector<TensorDescriptor::WeakPtr>{}), name}
     {
-        outputs_ = {std::make_shared<TensorDescriptor>(yt_ml_toolkit::DataType::fp32, yt_ml_toolkit::Shape{12}, this)};
+        outputs_ = {std::make_shared<TensorDescriptor>(yt::DataType::fp32, yt::Shape{12}, this)};
     }
     const OutputsList &inferOutputShapes() override { return outputs_; }
     MOCK_METHOD(void, Die, ());
