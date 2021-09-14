@@ -1,8 +1,12 @@
+#include <throw_exception.h>
 #include "traversal.h"
 #include <list>
+#include <string>
 
 namespace yt {
 namespace graph {
+
+using namespace std::string_literals;
 
 void backBFSTraversal(Node& node, std::function<bool(Node&)> callback)
 {
@@ -10,8 +14,16 @@ void backBFSTraversal(Node& node, std::function<bool(Node&)> callback)
     auto current = list.front();
     while (callback(*current))
     {
-        for (const auto &input : current->inputs())
-            list.push_back(input.lock()->producer());
+        auto &inputs = current->inputs();
+        auto numInputs = inputs.size();
+        for (int i = 0; i < numInputs; i++)
+        {
+            auto input = inputs[i].lock();
+            if (input)
+                list.push_back(input->producer());
+            else
+                throwException("backBFSTraversal Failure: Input #"s + std::to_string(i) + " of "s + current->name() + " is not available"s);
+        }
         list.pop_front();
         if (list.empty())
             break;
@@ -19,6 +31,7 @@ void backBFSTraversal(Node& node, std::function<bool(Node&)> callback)
             current = list.front();
     }
 }
+
 
 void BFSTraversal(Node &node, std::function<bool(Node &)> callback)
 {
@@ -37,6 +50,7 @@ void BFSTraversal(Node &node, std::function<bool(Node &)> callback)
     }
 }
 
+
 void DFSTraversal(Node &node, std::function<bool (Node &)> callback)
 {
     if (!callback(node))
@@ -46,12 +60,21 @@ void DFSTraversal(Node &node, std::function<bool (Node &)> callback)
             DFSTraversal(*consumer, callback);
 }
 
+
 void backDFSTraversal(Node &node, std::function<bool (Node &)> callback)
 {
     if (!callback(node))
         return;
-    for (auto& input : node.inputs())
-        backDFSTraversal(*input.lock()->producer(), callback);
+    auto &inputs = node.inputs();
+    auto numInputs = inputs.size();
+    for (int i = 0; i < numInputs; i++)
+    {
+        auto input = inputs[i].lock();
+        if (input)
+            backDFSTraversal(*input->producer(), callback);
+        else
+            throwException("backDFSTraversal Failure: Input #"s + std::to_string(i) + " of "s + node.name() + " is not available"s);
+    }
 }
 
 

@@ -1,3 +1,4 @@
+#include <throw_exception.h>
 #include <graph/node_base.h>
 #include <graph/traversal.h>
 #include <array>
@@ -212,7 +213,7 @@ TEST(NodeBaseTest, CheckDFSTraversal)
 }
 
 
-TEST(NodeBaseTest, CheckbackDFSTraversal)
+TEST(NodeBaseTest, CheckBackDFSTraversal)
 {
     using namespace fake_nodes;
     auto graphNodes = buildFakeGraph();
@@ -229,4 +230,46 @@ TEST(NodeBaseTest, CheckbackDFSTraversal)
     EXPECT_CALL(*std::dynamic_pointer_cast<Multiply>(graphNodes[4]), Die());
     EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[5]), Die());
     EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[6]), Die());
+}
+
+
+TEST(NodeBaseTest, CheckBackDFSTraversalNoNodeInput)
+{
+    using namespace fake_nodes;
+    auto graphNodes = buildFakeGraph();
+    EXPECT_CALL(*std::dynamic_pointer_cast<Input>(graphNodes[0]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[1]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[2]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[3]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Multiply>(graphNodes[4]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[5]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[6]), Die());
+    graphNodes.erase(graphNodes.begin());
+    std::list<Node*> orderedNodes;
+    EXPECT_THROW(
+                backDFSTraversal(*graphNodes.back(), [&orderedNodes](Node& node) {
+                    orderedNodes.push_back(&node);
+                    return true;
+                }), yt::Exception);
+}
+
+
+TEST(NodeBaseTest, CheckBackBFSTraversalNoNodeInput)
+{
+    using namespace fake_nodes;
+    auto graphNodes = buildFakeGraph();
+    EXPECT_CALL(*std::dynamic_pointer_cast<Input>(graphNodes[0]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[1]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[2]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[3]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Multiply>(graphNodes[4]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[5]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[6]), Die());
+    graphNodes.erase(graphNodes.begin());
+    std::list<Node*> orderedNodes;
+    EXPECT_THROW(
+                backBFSTraversal(*graphNodes.back(), [&orderedNodes](Node& node) {
+                    orderedNodes.push_back(&node);
+                    return true;
+                }), yt::Exception);
 }
