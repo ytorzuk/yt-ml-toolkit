@@ -46,6 +46,14 @@ void DFSTraversal(Node &node, std::function<bool (Node &)> callback)
             DFSTraversal(*consumer, callback);
 }
 
+void backDFSTraversal(Node &node, std::function<bool (Node &)> callback)
+{
+    if (!callback(node))
+        return;
+    for (auto& input : node.inputs())
+        backDFSTraversal(*input.lock()->producer(), callback);
+}
+
 
 } // namespace yt
 } // namespace graph

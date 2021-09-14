@@ -9,6 +9,7 @@ namespace graph {
 void BFSTraversal(Node& node, std::function<bool(Node&)> callback);
 void backBFSTraversal(Node& node, std::function<bool(Node&)> callback);
 void DFSTraversal(Node& node, std::function<bool(Node&)> callback);
+void backDFSTraversal(Node& node, std::function<bool(Node&)> callback);
 
 } // graph
 } // yt_ml_toolkit
