@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-using namespace yt_ml_toolkit::graph_representation;
+using namespace yt_ml_toolkit::graph;
 using namespace std::string_literals;
 
 namespace fake_nodes {
