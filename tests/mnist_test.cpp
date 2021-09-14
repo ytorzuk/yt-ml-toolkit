@@ -1,4 +1,4 @@
-#include <mnist.h>
+#include <dataset/mnist.h>
 #include <algorithm>
 #ifdef __GNUC__
 #include <experimental/filesystem>
