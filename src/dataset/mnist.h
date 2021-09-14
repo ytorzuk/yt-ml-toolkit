@@ -4,6 +4,7 @@
 #include <vector>
 
 namespace yt_ml_toolkit {
+namespace dataset {
 
 class Mnist
 {
@@ -26,4 +27,5 @@ private:
     std::int32_t height_ {};
 };
 
+} // dataset
 } // yt_ml_toolkit
