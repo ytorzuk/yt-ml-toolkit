@@ -37,6 +37,15 @@ void BFSTraversal(Node &node, std::function<bool(Node &)> callback)
     }
 }
 
+void DFSTraversal(Node &node, std::function<bool (Node &)> callback)
+{
+    if (!callback(node))
+        return;
+    for (auto& output : node.outputs())
+        for (auto& consumer : output->consumers())
+            DFSTraversal(*consumer, callback);
+}
+
 
 } // namespace yt
 } // namespace graph
