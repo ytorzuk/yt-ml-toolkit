@@ -35,7 +35,7 @@ Node::~Node()
     }
 }
 
-const std::__cxx11::string &Node::name() const
+const std::string &Node::name() const
 {
     return name_;
 }
@@ -60,7 +60,7 @@ const Node::InputsList &Node::inputs() const
     return inputs_;
 }
 
-yt::graph::Node::operator TensorDescriptor::WeakPtr()
+Node::operator TensorDescriptor::WeakPtr()
 {
     return outputs_.front();
 }
