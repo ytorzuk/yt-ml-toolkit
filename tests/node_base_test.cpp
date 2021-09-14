@@ -1,4 +1,5 @@
 #include <graph/node_base.h>
+#include <graph/traversal.h>
 #include <array>
 #include <list>
 #include <memory>
