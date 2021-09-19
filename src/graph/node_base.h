@@ -1,7 +1,6 @@
 #pragma once
 
 #include "shape.h"
-#include <experimental/optional>
 #include <functional>
 #include <string>
 #include <vector>
@@ -59,9 +58,6 @@ protected:
     // To be initialized in a subclass
     OutputsList outputs_;
 };
-
-void BFSTraversal(Node& node, std::function<void(Node&)> callback);
-void backBFSTraversal(Node& node, std::function<void(Node&)> callback);
 
 } // graph
 } // yt_ml_toolkit
