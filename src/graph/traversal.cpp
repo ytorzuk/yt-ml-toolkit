@@ -1,5 +1,7 @@
 #include <throw_exception.h>
+#include <graph/output.h>
 #include "traversal.h"
+#include <algorithm>
 #include <list>
 #include <string>
 
@@ -75,6 +77,27 @@ void backDFSTraversal(Node &node, std::function<bool (Node &)> callback)
         else
             throwException("backDFSTraversal Failure: Input #"s + std::to_string(i) + " of "s + node.name() + " is not available"s);
     }
+}
+
+Nodes traverseInExecutionOrder(const Nodes &nodes, std::function<void (Node::Ptr)> callback, const Nodes &outputs)
+{
+    Nodes outputNodes {};
+    if (outputs.empty())
+        std::copy_if(nodes.begin(), nodes.end(), outputNodes.begin(), [](Node::Ptr node) { return std::dynamic_pointer_cast<graph::Output>(node); });
+    else
+        std::reverse_copy(outputs.begin(), outputs.end(), std::back_inserter(outputNodes));
+    Nodes orderedNodes {};
+    for (auto& output : outputNodes)
+        backDFSTraversal(*output, [&orderedNodes](Node& node) { orderedNodes.push_back(node.shared_from_this()); return true; });
+    std::reverse(orderedNodes.begin(), orderedNodes.end());
+    auto last = orderedNodes.end();
+    for (auto it = orderedNodes.begin(); it != last; it++)
+        last = std::remove(it + 1, last, *it);
+    orderedNodes.erase(last, orderedNodes.end());
+    if (callback)
+        for (auto& node : orderedNodes)
+            callback(node);
+    return orderedNodes;
 }
 
 
