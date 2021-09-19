@@ -273,3 +273,69 @@ TEST(NodeBaseTest, CheckBackBFSTraversalNoNodeInput)
                     return true;
                 }), yt::Exception);
 }
+
+
+
+TEST(NodeBaseTest, CheckTraverseInExecutionOrder)
+{
+    using namespace fake_nodes;
+    auto graphNodes = buildFakeGraph();
+    EXPECT_CALL(*std::dynamic_pointer_cast<Input>(graphNodes[0]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[1]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[2]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[3]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Multiply>(graphNodes[4]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[5]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[6]), Die());
+    std::list<Node*> orderedNodes;
+    std::string result;
+    traverseInExecutionOrder(graphNodes, [&result](Node::Ptr node) { result += '/' + node->name(); }, {graphNodes.back()});
+    EXPECT_EQ(result, "/const_0/input_0/add_0/const_1/mul_0/add_1/result_0");
+}
+
+
+/**
+ *
+ * Builds a graph
+ *
+ *   Const   ________________
+ *      \   /                \
+ *       Add --- Multiply --- Add --- Output
+ *      /      /         \   /
+ *   Input   Const        Add ------- Output
+ *
+ */
+std::vector<Node::Ptr> buildFakeGraphWith2Outputs()
+{
+    using namespace fake_nodes;
+    auto input = std::make_shared<Input>("input_0");
+    auto const_0 = std::make_shared<Const>("const_0");
+    auto add_0 = std::make_shared<Add>(*input, *const_0, "add_0");
+    auto const_1 = std::make_shared<Const>("const_1");
+    auto mul_0 = std::make_shared<Multiply>(*add_0, *const_1, "mul_0");
+    auto add_1 = std::make_shared<Add>(*mul_0, *add_0, "add_1");
+    auto add_2 = std::make_shared<Add>(*mul_0, *add_1, "add_2");
+    auto result_0 = std::make_shared<Output>(*add_1, "result_0");
+    auto result_1 = std::make_shared<Output>(*add_2, "result_1");
+    return {input, const_0, add_0, const_1, mul_0, add_1, add_2, result_0, result_1};
+}
+
+
+TEST(NodeBaseTest, CheckTraverseInExecutionOrder2Outputs)
+{
+    using namespace fake_nodes;
+    auto graphNodes = buildFakeGraphWith2Outputs();
+    EXPECT_CALL(*std::dynamic_pointer_cast<Input>(graphNodes[0]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[1]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[2]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[3]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Multiply>(graphNodes[4]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[5]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[6]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[7]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[8]), Die());
+    std::list<Node*> orderedNodes;
+    std::string result;
+    traverseInExecutionOrder(graphNodes, [&result](Node::Ptr node) { result += '/' + node->name(); }, {*(graphNodes.end() - 2), graphNodes.back()});
+    EXPECT_EQ(result, "/const_0/input_0/add_0/const_1/mul_0/add_1/result_0/add_2/result_1");
+}
