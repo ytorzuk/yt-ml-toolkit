@@ -289,7 +289,7 @@ TEST(NodeBaseTest, CheckTraverseInExecutionOrder)
     EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[6]), Die());
     std::list<Node*> orderedNodes;
     std::string result;
-    traverseInExecutionOrder(graphNodes, [&result](Node::Ptr node) { result += '/' + node->name(); }, {graphNodes.back()});
+    traverseInExecutionOrder({graphNodes.front()}, {graphNodes.back()}, [&result](Node::Ptr node) { result += '/' + node->name(); });
     EXPECT_EQ(result, "/const_0/input_0/add_0/const_1/mul_0/add_1/result_0");
 }
 
@@ -336,6 +336,29 @@ TEST(NodeBaseTest, CheckTraverseInExecutionOrder2Outputs)
     EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[8]), Die());
     std::list<Node*> orderedNodes;
     std::string result;
-    traverseInExecutionOrder(graphNodes, [&result](Node::Ptr node) { result += '/' + node->name(); }, {*(graphNodes.end() - 2), graphNodes.back()});
+    traverseInExecutionOrder({graphNodes.front()}, {*(graphNodes.end() - 2), graphNodes.back()},
+                             [&result](Node::Ptr node) { result += '/' + node->name(); });
     EXPECT_EQ(result, "/const_0/input_0/add_0/const_1/mul_0/add_1/result_0/add_2/result_1");
+}
+
+
+TEST(NodeBaseTest, CheckTraverseInExecutionOrderDisconnectedInput)
+{
+    using namespace fake_nodes;
+    auto graphNodes = buildFakeGraphWith2Outputs();
+    auto disconnectedInput = std::make_shared<Input>("input_0");
+    EXPECT_CALL(*std::dynamic_pointer_cast<Input>(disconnectedInput), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Input>(graphNodes[0]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[1]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[2]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Const>(graphNodes[3]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Multiply>(graphNodes[4]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[5]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Add>(graphNodes[6]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[7]), Die());
+    EXPECT_CALL(*std::dynamic_pointer_cast<Output>(graphNodes[8]), Die());
+    std::list<Node*> orderedNodes;
+    std::string result;
+    EXPECT_THROW(traverseInExecutionOrder({disconnectedInput}, {*(graphNodes.end() - 2), graphNodes.back()}),
+                 yt::Exception);
 }

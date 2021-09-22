@@ -9,8 +9,7 @@ namespace graph {
 
 using Nodes = std::vector<Node::Ptr>;
 
-Nodes traverseInExecutionOrder(const Nodes &nodes, std::function<void(Node::Ptr)> callback,
-                              const Nodes &outputs = {});
+Nodes traverseInExecutionOrder(const Nodes &inputs, const Nodes &outputs, std::function<void(Node::Ptr)> callback = nullptr);
 void BFSTraversal(Node& node, std::function<bool(Node&)> callback);
 void backBFSTraversal(Node& node, std::function<bool(Node&)> callback);
 void DFSTraversal(Node& node, std::function<bool(Node&)> callback);
