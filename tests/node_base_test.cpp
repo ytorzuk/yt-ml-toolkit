@@ -23,7 +23,6 @@ public:
     {
         outputs_ = {std::make_shared<TensorDescriptor>(yt::DataType::fp32, yt::Shape{12}, this)};
     }
-    const OutputsList &inferOutputShapes() override { return outputs_; }
     MOCK_METHOD(void, Die, ());
     ~Input() override { Die(); }
 };
@@ -35,7 +34,6 @@ public:
     {
         outputs_ = {std::make_shared<TensorDescriptor>(yt::DataType::fp32, yt::Shape{12}, this)};
     }
-    const OutputsList &inferOutputShapes() override { return outputs_; }
     MOCK_METHOD(void, Die, ());
     ~Const() override { Die(); }
 };
@@ -46,7 +44,6 @@ public:
     Output(const TensorDescriptor::WeakPtr &input, const std::string &name) : Node{std::move(std::vector<TensorDescriptor::WeakPtr>{input}), name}
     {
     }
-    const OutputsList &inferOutputShapes() override { return outputs_; }
     MOCK_METHOD(void, Die, ());
     ~Output() override { Die(); }
 };
@@ -60,7 +57,6 @@ public:
         auto aPtr = a.lock();
         outputs_.push_back(std::make_shared<TensorDescriptor>(aPtr->dataType(), aPtr->shape(), this));
     }
-    const OutputsList &inferOutputShapes() override { return outputs_; }
     MOCK_METHOD(void, Die, ());
     ~Add() override { Die(); }
 };
@@ -74,7 +70,6 @@ public:
         auto aPtr = a.lock();
         outputs_.push_back(std::make_shared<TensorDescriptor>(aPtr->dataType(), aPtr->shape(), this));
     }
-    const OutputsList &inferOutputShapes() override { return outputs_; }
     MOCK_METHOD(void, Die, ());
     ~Multiply() override { Die(); }
 };
