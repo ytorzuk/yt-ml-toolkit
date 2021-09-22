@@ -1,6 +1,6 @@
 #pragma once
 
-#include <array>
+#include <vector>
 #include <memory>
 
 namespace yt {
@@ -19,7 +19,10 @@ enum DataType
     uint64,
 };
 
-class Shape : public std::array<std::size_t, 5>
-{};
+class Shape : public std::vector<std::size_t>
+{
+public:
+    using std::vector<std::size_t>::vector;
+};
 
 } // yt_ml_toolkit
