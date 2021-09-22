@@ -3,6 +3,8 @@
 namespace yt {
 namespace graph {
 
+unsigned Node::uniqueNameSuffix {};
+
 Node::Node(const std::vector<TensorDescriptor::WeakPtr> &inputs, const std::string &name) :
     name_ {name},
     inputs_ {inputs.begin(), inputs.end()}

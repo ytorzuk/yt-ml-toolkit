@@ -44,19 +44,23 @@ public:
     explicit Node(std::vector<TensorDescriptor::WeakPtr> &&inputs, const std::string &name);
     virtual ~Node();
     const std::string &name() const;
-    virtual const OutputsList &inferOutputShapes() = 0;
     OutputsList& outputs();
     const OutputsList &outputs() const;
     InputsList& inputs();
     const InputsList &inputs() const;
     virtual operator TensorDescriptor::Ptr();
     virtual operator TensorDescriptor::WeakPtr();
+protected:
+    static unsigned genUniqueNameSuffix() { return uniqueNameSuffix++; }
 
 protected:
     std::string name_;
     InputsList inputs_;
     // To be initialized in a subclass
     OutputsList outputs_;
+
+private:
+    static unsigned uniqueNameSuffix;
 };
 
 } // graph
