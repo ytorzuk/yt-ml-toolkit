@@ -3,6 +3,7 @@
 #include "traversal.h"
 #include <algorithm>
 #include <list>
+#include <set>
 #include <string>
 
 namespace yt {
@@ -79,21 +80,21 @@ void backDFSTraversal(Node &node, std::function<bool (Node &)> callback)
     }
 }
 
-Nodes traverseInExecutionOrder(const Nodes &nodes, std::function<void (Node::Ptr)> callback, const Nodes &outputs)
+Nodes traverseInExecutionOrder(const Nodes &inputs, const Nodes &outputs, std::function<void(Node::Ptr)> callback)
 {
-    Nodes outputNodes {};
-    if (outputs.empty())
-        std::copy_if(nodes.begin(), nodes.end(), outputNodes.begin(), [](Node::Ptr node) { return std::dynamic_pointer_cast<graph::Output>(node); });
-    else
-        std::reverse_copy(outputs.begin(), outputs.end(), std::back_inserter(outputNodes));
+    Nodes reverseOutputs {outputs.rbegin(), outputs.rend()};
     Nodes orderedNodes {};
-    for (auto& output : outputNodes)
+    for (auto& output : reverseOutputs)
         backDFSTraversal(*output, [&orderedNodes](Node& node) { orderedNodes.push_back(node.shared_from_this()); return true; });
     std::reverse(orderedNodes.begin(), orderedNodes.end());
     auto last = orderedNodes.end();
     for (auto it = orderedNodes.begin(); it != last; it++)
         last = std::remove(it + 1, last, *it);
     orderedNodes.erase(last, orderedNodes.end());
+    std::set<Node::Ptr> nodesSet {orderedNodes.begin(), orderedNodes.end()};
+    for (auto& input : inputs)
+        if (nodesSet.find(input) == nodesSet.end())
+            throwException("Input "s + input->name() + " is not part of the graph"s);
     if (callback)
         for (auto& node : orderedNodes)
             callback(node);
